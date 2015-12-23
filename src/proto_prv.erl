@@ -78,7 +78,7 @@ generate_protobuffs_routing(ImportsDirs, OutputDir, DstFileName) ->
         {encodes, L4},
         {decodes, L4}
     ],
-    Src = bbmustache:render(mustache_content(), Ctx),
+    Src = mustache:render(mustache_content(), Ctx),
     error_logger:info_msg("Writing pt file to ~p~n", [OutputDir ++ DstFileName]),
     file:write_file(OutputDir ++ DstFileName, Src).
 
