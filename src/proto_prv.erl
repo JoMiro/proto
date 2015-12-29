@@ -25,7 +25,7 @@ init(State) ->
 
 -spec do(rebar_state:t()) -> {ok, rebar_state:t()} | {error, string()}.
 do(State) ->
-    make([{imports_dir, ["./proto_define/"]}, {output_include_dir, "./src/proto/"}, {output_src_dir, "./src/proto/"}]),
+    make([{imports_dir, ["./protocol/"]}, {output_include_dir, "./src/proto/"}, {output_src_dir, "./src/proto/"}]),
     {ok, State}.
 
 -spec format_error(any()) ->  iolist().
