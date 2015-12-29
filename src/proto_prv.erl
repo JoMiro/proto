@@ -95,7 +95,7 @@ get_file_ctx(FileName) ->
     Src = binary_to_list(Bin),
     PbMod = list_to_atom(Name ++ "_pb"),
     HandleMod = list_to_atom(lists:flatten(io_lib:format("handle_~s", [Name]))),
-    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\nmessage (?<pb_name>\\S+){", [{capture, all_names}, global]) of
+    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\nmessage (?<pb_name>\\S+).*{", [{capture, all_names}, global]) of
         {match, L} ->
             {true, lists:map(
                 fun([PbIdAt, PbNameAt]) ->
