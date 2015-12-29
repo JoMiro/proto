@@ -95,14 +95,14 @@ get_file_ctx(FileName) ->
     Src = binary_to_list(Bin),
     PbMod = list_to_atom(Name ++ "_pb"),
     HandleMod = list_to_atom(lists:flatten(io_lib:format("handle_~s", [Name]))),
-    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\nmessage (?<pb_name>\\S+)*{", [{capture, all_names}, global]) of
+    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\nmessage (?<pb_name>\\S+){", [{capture, all_names}, global]) of
         {match, L} ->
             Ret = lists:map(fun([PbIdAt, PbNameAt]) ->
                 PbId = erlang:list_to_integer(substr(Src, PbIdAt), 16),
                 PbName = erlang:list_to_atom(substr(Src, PbNameAt)),
                 [
                     {pb_id, lists:flatten(io_lib:format("16#~4.16.0B", [PbId]))},
-                    {pb_name, PbName},
+                    {pb_name, string:strip(PbName)},
                     {handle_mod, HandleMod},
                     {pb_mod, PbMod}
                 ]
