@@ -95,7 +95,7 @@ get_file_ctx(FileName) ->
     Src = binary_to_list(Bin),
     PbMod = list_to_atom(Name ++ "_pb"),
     HandleMod = list_to_atom(lists:flatten(io_lib:format("handle_~s", [Name]))),
-    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\nmessage (?<pb_name>\\S+).*{", [{capture, all_names}, global]) of
+    case re:run(Src, "//\s*0x(?<pb_id>[0-9,a-z,A-Z]+).*\r\nmessage (?<pb_name>\\S+).*{", [{capture, all_names}, global]) of
         {match, L} ->
             {true, lists:map(
                 fun([PbIdAt, PbNameAt]) ->
@@ -115,7 +115,6 @@ get_file_ctx(FileName) ->
 substr(Src, {Offset, Len}) ->
     string:sub_string(Src, Offset + 1, Offset + Len).
 
-
 mustache_content() ->
     "-module({{module}}).\n\n" ++
     "{{#include}}\n" ++
@@ -125,8 +124,8 @@ mustache_content() ->
     "-export([encode/1, decode/2]).\n\n" ++
     "{{#encodes}}" ++
     "encode(#{{pb_name}}{} = Msg) ->\n\t" ++
-    "IoData = {{pb_mod}}:encode_{{pb_name}}(Msg),\n\t" ++
-    "[<<{{pb_id}}:32>>, IoData];\n" ++
+    "BinData = {{pb_mod}}:encode_{{pb_name}}(Msg),\n\t" ++
+    "[<<(erlang:iolist_size(BinData) + 4):16, {{pb_id}}:32>>, BinData];\n" ++
     "{{/encodes}}\n" ++
     "encode(Msg) ->\n\t" ++
     "erlang:error({invalid_proto_msg, Msg}).\n\n" ++
